@@ -1,0 +1,27 @@
+{
+  "name": "vue-single-select",
+  "version": "1.0.1",
+  "description": "single select autocomplete dropdown for vue",
+  "main": "single-select.vue",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robrogers3/vue-single-select.git"
+  },
+  "keywords": [
+    "vue",
+    "js",
+    "dropdown",
+    "autocomplete",
+    "select",
+    "element"
+  ],
+  "author": "Rob Rogers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robrogers3/vue-single-select/issues"
+  },
+  "homepage": "https://github.com/robrogers3/vue-single-select#readme"
+}
