@@ -1,8 +1,9 @@
 # vue-single-select
 
-    single select dropdown with autocomplete for Vue apps for you!
+    single select dropdown component with autocomplete for Vue apps for you!
 
 ## What It Does
+
 vue-single-select provides a **simple** interface to replace regular select elements with an auto-complete select.
 
 ## What It Does Not Do
@@ -15,7 +16,7 @@ No massive styling options (for now).
 
 # Usage
 
-### Save it
+### Install it
 
 ```
 npm i vue-single-select
@@ -24,6 +25,7 @@ npm i vue-single-select
 ### Register it
 
 In your component:
+
 ```
 import VueSingleSelect from "vue-single-select";
 export default {
@@ -33,37 +35,57 @@ components: {
   //...
 }
 ```
+
 Globally:
+
 ```
 import VueSingleSelect from "vue-single-select";
 Vue.component('vue-single-select', VueSingleSelect);
 ```
 
 ### Use It
+
 ```
 <vue-single-select
-        placeholder="my static placeholder"
-        value-key="id"   //the post has an id (good for search and display)
-        label="title"    //the post has a title
-        v-model="post"   //you want to select a post
-        :options="posts" //out of all these posts
-></vue-single-select>
-```
-### Use It Again
-```
-<vue-single-select
-        :placeholder="myDynamicPlaceholder"
-        label="reply"      //a reply only has a reply
-        v-model="reply"   //you want to select a reply
-        :options="replies" //out of all these reply
+        name="maybe"
+        placeholder="pick a post"
+        you-want-to-select-a-post="ok"
+        v-model="post"
+        out-of-all-these-posts="makes sense"
+        :options="posts"
+        a-post-has-an-id="good for search and display"
+        value-key="id"
+        the-post-has-a-title="make sure to show these"
+        label="title"
 ></vue-single-select>
 ```
 
 ### Use It Again
+
 ```
 <vue-single-select
-        v-model="fruit"   //you're hungry
-        :options="['apple','cherry','tomato']" //it's just fruit
+        you-want-to-select-a-reply="yes"
+        v-model="reply"
+        out-of-all-these-replies="yep"
+        :options="replies"
+        a-reply-only-has-a-reply="sounds about right"
+        label="reply"
+        seed-an-initial-value="what's seed mean?"
+        initial="seed me"
+        you-only-want-20-options-to-show="sure"
+        :max-results="20"
+></vue-single-select>
+```
+
+### Use It Again
+
+```
+<vue-single-select
+        v-model="fruit"
+        it-is-just-fruit="simple yes?"
+        :options="['apple','cherry','tomato']"
+        you-are-hungry="very!"
+        :required="true"
 ></vue-single-select>
 ```
 
@@ -73,25 +95,34 @@ You can override some of it. Like so:
 
 ```
 <vue-single-select
-        :placeholder="myPlaceholder"
-        label="reply"      //a reply only has a reply
-        v-model="reply"   //you want to select a reply
-        :options="replies" //out of all these reply
-        max-height="1000px" //I like a long dropdowns
-        :classes="{input: 'form-control', wrapper:'form-group', icon: 'icon'}" //you like bootstrap!
+        id="selected-reply"
+        name="a_reply"
+        label="reply"
+        v-model="reply"
+        :options="replies"
+        you-like-huge-dropdowns="1000px is long!"
+        max-height="1000px"
+        you-love-bootstrap="yes!!"
+        :classes="{
+                    input: 'form-control',
+                    wrapper: 'form-group',
+                    icon: 'glyphicon'
+        }"
 ></vue-single-select>
 ```
-Then all you need to do is provide a class definition like so:
+
+Then all you need to do is provide some class definitions like so:
+
 ```
 .form-control {
     color: pink;
     width: 10000px;
     _go: nuts;
 }
-.icon {
+.glyphicon {
     display:none;
 }
-.wrapper {
+.form-group {
     background-color: pink;
 }
 ```
@@ -102,33 +133,40 @@ Meh, see props below.
 
 ## Why vue-single-select is better
 
-1. It handles custom label/value props for displaying options. 
+1.  It handles custom label/value props for displaying options.
 
     Other select components require you to conform to their format. Which often means data wrangling.
 
-2. It's easier on the DOM. 
+2.  It's easier on the DOM.
 
-    Other components will load up all the options available in the select element. This can be heavy. vue-single-select makes an executive decision that you probably will not want to scroll more than N options before you want to narrow things down a bit. You can change this, but the default is 50.
+    Other components will load up all the options available in the select element. This can be heavy. vue-single-select makes an executive decision that you probably will not want to scroll more than N options before you want to narrow things down a bit. You can change this, but the default is 30.
 
-3. Snappy Event Handling
+3.  Snappy Event Handling
 
-    * tab for options
-    * up and down arrows for selecting options
-    * enter to select first match
-    * remembers selection on change
-    * hit the escape key to well escape
+    - tab for selecting options
+    - up and down arrows for selecting options
+    - enter to select first match
+    - remembers selection on change
+    - hit the escape key to well escape
 
-4. Lightweight
+4.  Lightweight
 
-    * Why are the other packages so big and actually have dependencies?
+    - Why are the other packages so big and actually have dependencies?
 
-5. This one just looks nicer
+5.  This one just looks nicer
 
 ## Available Props:
+
 ```
     props: {
         value: {
             required: true
+        },
+        //name of the input, good for doing a POST
+        name: {
+            type: String,
+            required: false,
+            default: () => ""
         },
         //your list for the dropdown
         options: {
@@ -153,7 +191,7 @@ Meh, see props below.
         placeholder: {
             type: String,
             required: false,
-            default: () => 'Search Here'
+            default: () => ''
         },
         maxHeight: {
             type: String,
@@ -172,7 +210,7 @@ Meh, see props below.
             required: false,
             default: () => {
                 return  {
-                    wrapper: 'form-wrapper', 
+                    wrapper: 'single-select-wrapper',
                     input: 'form-control',
                     icon: 'icon'
                 }
@@ -190,29 +228,31 @@ Meh, see props below.
             required: false,
             default: () => false
         },
-        noQueryResultsLength: {
+        //No I don't want to scroll past 30 options. yikes.
+        maxResults: {
             type: Number,
             required: false,
-            default: () => 50
+            default: () => 30
         }
     },
 ```
+
 ## Q&A
 
-Q. *What about Ajax?*
+Q. _What about Ajax?_
 
 A. Good question. Why aren't you passing that in as a prop?
 Seriously, this is just a widget why does it need knowledge of it's data source?
 
-Q. *What about Templating?*
+Q. _What about Templating?_
 
 A. Good question. Really. Working on it.
 
-Q. *What about Multiple Selects?*
+Q. _What about Multiple Selects?_
 
 A. Nope not found here.
 
-Q. *Why doesn't it work?*
+Q. _Why doesn't it work?_
 
 A. You know I really didn't make this to be used without a bundler and the vue-loader. If you don't know what this means then checkout **Parcel** or **Vue Cli** to get started. You're going to want it anyway.
 

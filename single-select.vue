@@ -2,9 +2,17 @@
     <div>
         <div v-if="!selectedItem" :class="classes.wrapper">
             <div class="relative inline-block w-full">
-                <input ref="search" :class="classes.input" tabindex="0" :id="inputId" @keyup.tab="closeOut" @click="openSelect = true" @keyup.esc="closeOut"
-                    @keyup.enter="selectPossibileMatch($event)" @keyup.down="visitOptions()" :placeholder="placeholder"
-                    :required="required" v-model="searchText">
+                <input ref="search" :class="classes.input" tabindex="0" :id="inputId" 
+                    @click="openSelect = true" 
+                    @keyup.esc="closeOut"
+                    @keyup.enter="selectPossibileMatch($event)" 
+                    @keyup.down="arrowDown" 
+                    @keyup.up="arrowUp"
+                    @focus="this.searchText = ''"
+                    :placeholder="placeholder" autocomplete="off"
+                    :required="required" 
+                    v-model="searchText">
+
                 <div @click="toggleOpenSelect" :class="classes.icon" class="cursor-pointer absolute flex items-center">
                     <svg v-if="!openSelect" aria-hidden="true" viewBox="0 0 448 512">
                         <path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path>
@@ -14,23 +22,30 @@
                     </svg>
                 </div>
 
-                <ul @keyup.tab="handleClickOutside($event)" ref="options" v-if="matchingItems" :style="{'max-height': maxHeight}" style="z-index: 100"
-                    class="shadow-md p-1 absolute w-full overflow-auto appearance-none border rounded mt-px  text-grey-darker  border-grey-lighter bg-white list-reset leading-normal text-left"
-                    keyup.tab="handleClickOutside($event)">
-                    <li class="no-outline" v-for="(item, idx) in matchingItems" :key="idx">
-                        <a ref="option" class="block px-2 py-2 hover:outline-none no-underline  text-black" href="#" tabindex="1" @keyup.down="visitNextOption($event)"
-                            @keyup.up="visitPrevOption($event)" @keydown.enter="setItem(item)" @click.prevent="setItem(item)"
-                            @keyup.esc="closeOut" @keyup.tab="handleClickOutside($event)">
-                            <span v-text="itemDesciption(item)">
-                            </span>
-                        </a>
+                <ul tabindex="-1" ref="options" v-if="matchingItems" :style="{'max-height': maxHeight}" style="z-index: 100;padding"
+                    class="shadow-md absolute w-full overflow-auto appearance-none border rounded mt-px  text-grey-darker  border-grey-lighter bg-white list-reset leading-normal text-left"
+                    >
+                    <li tabindex="0" :class="{ 'is-active': idx === counter }" class="cursor-pointer px-1 py-2 outline-none" v-for="(item, idx) in matchingItems" :key="idx"
+                            @mouseover="focus(idx,$event)"
+                            @keyup.up="arrowUp"
+                            @keyup.tab.exact="arrowDown"
+                            @keyup.tab.shift.exact="arrowUp"
+                            @keydown.enter="setItem(item)" 
+                            @keyup.down="arrowDown"
+                            @click.prevent="setItem(item)"
+                            @keyup.esc="closeOut" 
+                            v-text="itemDesciption(item)">
                     </li>
                 </ul>
             </div>
         </div>
+
         <div :class="classes.wrapper" v-if="selectedItem">
-            <input id="inputId" :class="classes.input" ref="match" :required="required" @input="switchToSearch($event)" @click="switchToSearch($event)"
+            <input id="inputId" :name="name" :class="classes.input" ref="match" :required="required" 
+                @input="switchToSearch($event)" 
+                @click="switchToSearch($event)"
                 :placeholder="placeholder" :value="itemDesciption(selectedItem)">
+
             <div :class="classes.icon" @click="selectedItem = null" class="cursor-pointer absolute flex items-center">
                 <svg @keyup.enter="selectedItem = null" @keyup.space="selectedItem = null" aria-hidden="true" viewBox="0 0 512 512">
                     <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"></path>
@@ -44,6 +59,11 @@ export default {
   props: {
     value: {
       required: true
+    },
+    name: {
+      type: String,
+      required: false,
+      default: () => ""
     },
     options: {
       type: Array,
@@ -96,10 +116,10 @@ export default {
       required: false,
       default: () => false
     },
-    noQueryResultsLength: {
+    maxResults: {
       type: Number,
       required: false,
-      default: () => 50
+      default: () => 30
     }
   },
   mounted() {
@@ -115,10 +135,16 @@ export default {
     return {
       searchText: null,
       selectedItem: null,
-      openSelect: false
+      openSelect: false,
+      counter: -1
     };
   },
   watch: {
+    searchText(curr, prev) {
+      if (curr !== prev) {
+        this.counter = -1;
+      }
+    },
     selectedItem(curr, prev) {
       if (curr === prev) {
         return;
@@ -127,6 +153,8 @@ export default {
       if (curr) {
         return;
       }
+
+      this.$emit("input", null);
 
       this.$nextTick().then(() => {
         this.$refs.search.focus();
@@ -153,51 +181,62 @@ export default {
       }
 
       if (!this.searchText.length) {
-        return [...this.options].slice(0, this.noQueryResultsLength); //arbitrary but showing entire list is heavy
+        return [...this.options].slice(0, this.maxResults);
       }
 
       if (this.label && this.valueKey) {
-        return this.options.filter(item => {
-          return (
+        return this.options
+          .filter(item => {
+            return (
+              item[this.label]
+                .toString()
+                .toLowerCase()
+                .includes(this.searchText.toString().toLowerCase()) ||
+              this.searchText
+                .toString()
+                .toLowerCase()
+                .includes(item[this.valueKey].toString().toLowerCase())
+            );
+          })
+          .slice(0, this.maxResults);
+      }
+
+      if (this.label) {
+        return this.options
+          .filter(item =>
             item[this.label]
               .toString()
               .toLowerCase()
-              .includes(this.searchText.toString().toLowerCase()) ||
+              .includes(this.searchText.toString().toLowerCase())
+          )
+          .slice(0, this.maxResults);
+      }
+
+      if (this.valueKey) {
+        return this.options
+          .filter(item =>
             this.searchText
               .toString()
               .toLowerCase()
               .includes(item[this.valueKey].toString().toLowerCase())
-          );
-        });
+          )
+          .slice(0, this.maxResults);
       }
 
-      if (this.label) {
-        return this.options.filter(item =>
-          item[this.label]
+      return this.options
+        .filter(item =>
+          item
             .toString()
             .toLowerCase()
             .includes(this.searchText.toString().toLowerCase())
-        );
-      }
-
-      if (this.valueKey) {
-        return this.options.filter(item =>
-          this.searchText
-            .toString()
-            .toLowerCase()
-            .includes(item[this.valueKey].toString().toLowerCase())
-        );
-      }
-
-      return this.options.filter(item =>
-        item
-          .toString()
-          .toLowerCase()
-          .includes(this.searchText.toString().toLowerCase())
-      );
+        )
+        .slice(0, this.maxResults);
     }
   },
   methods: {
+    focus(idx, event) {
+      this.counter = idx;
+    },
     switchToSearch(event) {
       this.searchText = event.target.value;
       this.selectedItem = null;
@@ -221,27 +260,21 @@ export default {
       this.openSelect = false;
       this.searchText = null;
     },
-    visitNextOption(event) {
-      if (!event.target.parentElement.nextElementSibling) {
-        return;
+    arrowDown() {
+      if (this.counter < this.matchingItems.length) {
+        this.counter = this.counter + 1;
       }
-
-      event.target.parentElement.nextElementSibling.firstElementChild.focus();
     },
-    visitPrevOption(event) {
-      if (!event.target.parentElement.previousElementSibling) {
-        return;
+    arrowUp() {
+      if (this.counter > 0) {
+        this.counter = this.counter - 1;
       }
-
-      event.target.parentElement.previousElementSibling.firstElementChild.focus();
-    },
-    visitOptions() {
-      this.$refs.options.firstElementChild.firstElementChild.focus();
     },
     setItem(item) {
       this.selectedItem = item;
       this.searchText = null;
       this.openSelect = false;
+      this.counter = -1;
       this.$emit("input", item);
       this.$nextTick().then(() => {
         this.$refs.match.focus();
@@ -406,6 +439,9 @@ export default {
 .hover\:no-underline:hover {
   text-decoration: none;
 }
+.outline-none {
+  outline: 0;
+}
 .hover\:outline-none {
   outline: 0;
 }
@@ -462,10 +498,8 @@ button,
 input {
   overflow: visible;
 }
-a:focus {
-  background: #dae1e7;
-}
-a:hover {
+li:hover,
+.is-active {
   background: #dae1e7;
 }
 </style>
