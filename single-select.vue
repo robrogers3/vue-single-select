@@ -8,7 +8,7 @@
                     @keyup.enter="selectPossibileMatch($event)" 
                     @keyup.down="arrowDown" 
                     @keyup.up="arrowUp"
-                    @focus="this.searchText = ''"
+                    @focus="searchText = ''"
                     :placeholder="placeholder" autocomplete="off"
                     :required="required" 
                     v-model="searchText">
