@@ -38,7 +38,7 @@
                             @keyup.down="movePointerDown($event)"
                             @click.prevent="setOption()"
                             @keyup.esc="closeOut" 
-                            v-text="idx">
+                            v-text="optionDesciption(option)">
                     </li>
                 </ul>
             </div>
@@ -319,7 +319,6 @@ export default {
       }
     },
     setOption() {
-        console.log(this.pointer);
         if (!this.matchingOptions.length) {
             return;
         }
