@@ -26,7 +26,7 @@
                 <ul tabindex="-1" ref="options" v-if="matchingOptions" :style="{'max-height': maxHeight}" style="z-index: 100;padding"
                     class="shadow-md absolute w-full overflow-auto appearance-none border rounded mt-px  text-grey-darker  border-grey-lighter bg-white list-reset leading-normal text-left"
                     >
-                    <li tabindex="0" 
+                    <li tabindex="-1" 
                          v-for="(option, idx) in matchingOptions" :key="idx"
                          :class="{ 'is-active': idx === pointer }" 
                          class="cursor-pointer px-1 py-2 outline-none"
@@ -347,7 +347,9 @@ export default {
     },
     handleClickOutside(e) {
       if (!this.$el.contains(e.target)) {
-        this.closeOut();
+        this.openSelect = false;
+        this.searchText = null;
+        this.closed = true;
       }
     }
   }
