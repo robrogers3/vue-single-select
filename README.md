@@ -1,10 +1,13 @@
 # vue-single-select
 
-    single select dropdown component with autocomplete for Vue apps for you!
+    simple autocomplete select dropdown component for Vue apps for you!
+
+## Demo
+[Check it out on Code Pen](https://codepen.io/robrogers3/full/WKjGZE)
 
 ## What It Does
 
-vue-single-select provides a **simple** interface to replace regular select elements with an auto-complete select.
+vue-single-select provides a **simple** interface to replace regular select elements with an auto-complete select like Chosen for jquery.
 
 ## What It Does Not Do
 
@@ -19,7 +22,7 @@ No massive styling options (for now).
 ### Install it
 
 ```
-npm i vue-single-select
+$ npm i vue-single-select
 ```
 
 ### Register it
@@ -43,7 +46,17 @@ import VueSingleSelect from "vue-single-select";
 Vue.component('vue-single-select', VueSingleSelect);
 ```
 
-### Use It
+### Use It Again
+
+```
+<vue-single-select
+        v-model="fruit"
+        :options="['apple','banana','cherry','tomato']"
+        :required="true"
+></vue-single-select>
+```
+
+### Use It Again
 
 ```
 <vue-single-select
@@ -54,9 +67,9 @@ Vue.component('vue-single-select', VueSingleSelect);
         out-of-all-these-posts="makes sense"
         :options="posts"
         a-post-has-an-id="good for search and display"
-        value-key="id"
+        option-key="id"
         the-post-has-a-title="make sure to show these"
-        label="title"
+        option-label="title"
 ></vue-single-select>
 ```
 
@@ -69,23 +82,11 @@ Vue.component('vue-single-select', VueSingleSelect);
         out-of-all-these-replies="yep"
         :options="replies"
         a-reply-only-has-a-reply="sounds about right"
-        label="reply"
+        option-label="reply"
         seed-an-initial-value="what's seed mean?"
         initial="seed me"
         you-only-want-20-options-to-show="sure"
         :max-results="20"
-></vue-single-select>
-```
-
-### Use It Again
-
-```
-<vue-single-select
-        v-model="fruit"
-        it-is-just-fruit="simple yes?"
-        :options="['apple','cherry','tomato']"
-        you-are-hungry="very!"
-        :required="true"
 ></vue-single-select>
 ```
 
@@ -97,7 +98,7 @@ You can override some of it. Like so:
 <vue-single-select
         id="selected-reply"
         name="a_reply"
-        label="reply"
+        option-label="reply"
         v-model="reply"
         :options="replies"
         you-like-huge-dropdowns="1000px is long!"
@@ -106,7 +107,8 @@ You can override some of it. Like so:
         :classes="{
                     input: 'form-control',
                     wrapper: 'form-group',
-                    icon: 'glyphicon'
+                    icon: 'glyphicon',
+                    required: 'required'
         }"
 ></vue-single-select>
 ```
@@ -124,6 +126,13 @@ Then all you need to do is provide some class definitions like so:
 }
 .form-group {
     background-color: pink;
+}
+
+/* note that there is no default styling for required input. */
+.required {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
 }
 ```
 
@@ -147,94 +156,94 @@ Meh, see props below.
     - up and down arrows for selecting options
     - enter to select first match
     - remembers selection on change
-    - hit the escape key to well escape
+    - hit the escape key to, well, escape
 
 4.  Lightweight
 
     - Why are the other packages so big and actually have dependencies?
 
-5.  This one just looks nicer
+5.  Mine just looks nicer
+
+6. It's simple!!
 
 ## Available Props:
 
 ```
     props: {
-        value: {
-            required: true
-        },
-        //name of the input, good for doing a POST
-        name: {
-            type: String,
-            required: false,
-            default: () => ""
-        },
-        //your list for the dropdown
-        options: {
-            type: Array,
-            required: false,
-            default: () => [],
-        },
-        //the label you would like
-        label: {
-            type: String,
-            required: false,
-            default: () => null,
-        },
-        //maybe you want to show the "id - label" in the list.
-        //or maybe you want to search by id and the label
-        //i do
-        valueKey: {
-            type: String,
-            required: false,
-            default: () => null,
-        },
-        placeholder: {
-            type: String,
-            required: false,
-            default: () => ''
-        },
-        maxHeight: {
-            type: String,
-            default: () => '220px',
-            required: false
-        },
-        //form element id
-        inputId: {
-            type: String,
-            default: () => 'single-select',
-            required: false
-        },
-        //style me with these
-        classes: {
-            type: Object,
-            required: false,
-            default: () => {
-                return  {
-                    wrapper: 'single-select-wrapper',
-                    input: 'form-control',
-                    icon: 'icon'
-                }
-            }
-        },
-        //provide an initial value
-        initial: {
-            type: String,
-            required: true,
-            default: () => ''
-        },
-        //more for you than me.
-        required: {
-            type: Boolean,
-            required: false,
-            default: () => false
-        },
-        //No I don't want to scroll past 30 options. yikes.
-        maxResults: {
-            type: Number,
-            required: false,
-            default: () => 30
-        }
+    value: {
+      required: true
     },
+    //Give your input a name. Good for POSTS
+    name: {
+      type: String,
+      required: false,
+      default: () => ""
+    },
+    //Your list of options for the dropdown
+    options: {
+      type: Array,
+      required: false,
+      default: () => []
+    },
+    //options can have a label, but not necessary
+    optionLabel: {
+      type: String,
+      required: false,
+      default: () => null
+    },
+    //options can have a value, 
+    optionKey: {
+      type: String,
+      required: false,
+      default: () => null
+    },
+    placeholder: {
+      type: String,
+      required: false,
+      default: () => ""
+    },
+    maxHeight: {
+      type: String,
+      default: () => "220px",
+      required: false
+    },
+    //give your elements an id
+    inputId: {
+      type: String,
+      default: () => "single-select",
+      required: false
+    },
+    //use these to override the styling
+    classes: {
+      type: Object,
+      required: false,
+      default: () => {
+        return {
+          wrapper: "single-select-wrapper",
+          input: "form-control",
+          icon: "icon",
+          required: "required"
+        };
+      }
+    },
+    //you can set an initial value.
+    initial: {
+      type: String,
+      required: false,
+      default: () => null
+    },
+    //this helps you manage required input
+    required: {
+      type: Boolean,
+      required: false,
+      default: () => false
+    },
+    //the max number of matching results that should appear in the drop down
+    maxResults: {
+      type: Number,
+      required: false,
+      default: () => 30
+    }
 ```
 
 ## Q&A
