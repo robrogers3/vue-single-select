@@ -2,12 +2,13 @@
     <div ref="vuesingleselect">
         <div v-if="!selectedOption" :class="classes.wrapper">
             <div class="relative inline-block w-full">
-                <input ref="search" :class="[classes.input, isRequired]" tabindex="0" :id="inputId" 
-                    @click="seedSearchText" 
-                    @focus="seedSearchText" 
-                    @keyup.esc="closeOut"
+                <input ref="search" :class="[classes.input, isRequired]"  :id="inputId" 
+                    @click="seedSearchText"
+                    @focus="seedSearchText"
                     @keyup.enter="setOption" 
-                    @keyup.down="movePointerDown($event)"
+                    @keyup.down="movePointerDown"
+                    @keydown.tab.stop="closeOut"
+                    @keydown.esc.stop="closeOut"
                     @keyup.up="movePointerUp"
                     :placeholder="placeholder" 
                     autocomplete="off"
@@ -23,32 +24,34 @@
                     </svg>
                 </div>
 
-                <ul tabindex="-1" ref="options" v-if="matchingOptions" :style="{'max-height': maxHeight}" style="z-index: 100;padding"
+                <ul tabindex="-1" ref="options" v-if="matchingOptions" 
+                    :style="{'max-height': maxHeight}" style="z-index: 100;padding"
                     class="shadow-md absolute w-full overflow-auto appearance-none border rounded mt-px  text-grey-darker  border-grey-lighter bg-white list-reset leading-normal text-left"
                     >
                     <li tabindex="-1" 
                          v-for="(option, idx) in matchingOptions" :key="idx"
                          :class="{ 'is-active': idx === pointer }" 
                          class="cursor-pointer px-1 py-2 outline-none"
+                            @blur="handleClickOutside($event)"
                             @mouseover="pointer = idx"
                             @keyup.enter="setOption()" 
-                            @keyup.shift.tab.exact="movePointerUp"
-                            @keyup.tab.exact="movePointerDown($event)"
                             @keyup.up="movePointerUp()"
-                            @keyup.down="movePointerDown($event)"
+                            @keyup.down="movePointerDown()"
                             @click.prevent="setOption()"
-                            @keyup.esc="closeOut" 
-                            v-text="optionDesciption(option)">
+                            v-text="getOptionDescription(option)">
                     </li>
                 </ul>
             </div>
         </div>
 
         <div :class="classes.wrapper" v-if="selectedOption">
-            <input id="inputId" :name="name" :class="[classes.input]" ref="match" :required="required" 
+            <input id="inputId" :class="[classes.input]" ref="match" :required="required" 
                 @input="switchToSearch($event)" 
                 @click="switchToSearch($event)"
-                :placeholder="placeholder" :value="optionDesciption(selectedOption)">
+                :placeholder="placeholder" :value="getOptionDescription(selectedOption)">
+        
+            <input type="hidden" :name="name"  ref="selectValue"
+                :value="getOptionValue(selectedOption)">
 
             <div :class="classes.icon" @click="closeOut" class="cursor-pointer absolute flex items-center">
                 <svg  @click="closeOut" aria-hidden="true" viewBox="0 0 512 512">
@@ -59,8 +62,8 @@
     </div>
 </template>
 <script>
-/* eslint-disable */
-import pointerScroll from './pointerScroll';
+import pointerScroll from "./pointerScroll";
+
 export default {
   props: {
     value: {
@@ -109,7 +112,8 @@ export default {
           wrapper: "single-select-wrapper",
           input: "form-control",
           icon: "icon",
-          required: "required"
+          required: "required",
+          intialized: false
         };
       }
     },
@@ -127,12 +131,49 @@ export default {
       type: Number,
       required: false,
       default: () => 30
+    },
+    tabindex: {
+      type: String,
+      required: false,
+      default: () => {
+        return "";
+      }
+    },
+    getOptionDescription: {
+      type: Function,
+      default(option) {
+        if (this.optionKey && this.optionLabel) {
+          return option[this.optionKey] + " " + option[this.optionLabel];
+        }
+        if (this.optionLabel) {
+          return option[this.optionLabel];
+        }
+        if (this.optionKey) {
+          return option[this.optionKey];
+        }
+        return option;
+      }
+    },
+    getOptionValue: {
+      type: Function,
+      default(option) {
+        if (this.optionKey) {
+          return option[this.optionKey];
+        }
+
+        if (this.optionLabel) {
+          return option[this.optionLabel];
+        }
+
+        return option;
+      }
     }
   },
   mixins: [pointerScroll],
   mounted() {
-    document.addEventListener("keyup", this.handleClickOutside);
     document.addEventListener("click", this.handleClickOutside);
+    document.addEventListener("keyup", this.handleClickOutside);
+
     this.searchText = this.initial;
   },
   destroyed() {
@@ -152,7 +193,9 @@ export default {
       if (curr !== prev) {
         this.pointer = -1;
       }
-      this.closed = false;
+      if (curr) {
+        this.closed = false;
+      }
     },
     selectedOption(curr, prev) {
       if (curr === prev) {
@@ -164,6 +207,7 @@ export default {
       if (this.closed) {
         return;
       }
+
       if (curr) {
         return;
       }
@@ -176,9 +220,9 @@ export default {
       if (curr === prev) {
         return;
       }
-
+    
       if (this.selectedOption) {
-        this.searchText = this.optionDesciption(this.selectedOption);
+        this.searchText = this.getOptionDescription(this.selectedOption);
         return;
       }
 
@@ -190,28 +234,32 @@ export default {
       if (!this.searchText) {
         this.searchText = "";
       }
+
       this.$nextTick().then(() => {
         this.$refs.search.focus();
       });
     }
   },
   computed: {
-      isRequired() {
-          if (!this.required) {
-              return '';
-          }
+    isRequired() {
+      if (!this.required) {
+        return "";
+      }
 
-          if (!this.closed) {
-              return '';
-          }
+      if (!this.closed) {
+        return "";
+      }
 
-          return 'required';
-      },
+      if (this.selectedOption) {
+          return "";
+      }
+
+      return "required";
+    },
     matchingOptions() {
       if (this.searchText === null) {
         return null;
       }
-
       if (!this.searchText.length) {
         return [...this.options].slice(0, this.maxResults);
       }
@@ -267,13 +315,16 @@ export default {
   },
   methods: {
     seedSearchText() {
-      if (!this.searchText) {
+        if (this.searchText && this.searchText.length) {
+            return;
+        }
+
         this.searchText = "";
+
+        if (this.closed) {
+          this.closed = false;
       }
 
-        this.$nextTick().then(() => {
-            this.closed = false;
-      });
     },
     resetSearch() {
       this.selectedOption = null;
@@ -296,22 +347,15 @@ export default {
       this.searchText = null;
       this.closed = true;
     },
-    movePointerDown(event) {
+    movePointerDown() {
+      if (!this.matchingOptions) {
+        return;
+      }
       if (this.pointer >= this.matchingOptions.length - 1) {
         return;
       }
 
       this.pointer++;
-      return;
-      //Fiddling with focus events for tabbing. Hold off for now
-      if (event.target.tagName === "INPUT") {
-        this.$refs.options.firstElementChild.focus();
-        this.pointer++;
-        return;
-      }
-
-      event.target.focus();
-
     },
     movePointerUp() {
       if (this.pointer > 0) {
@@ -319,9 +363,12 @@ export default {
       }
     },
     setOption() {
-        if (!this.matchingOptions.length) {
-            return;
-        }
+      if (!this.matchingOptions.length) {
+        return;
+      }
+      if (this.pointer === -1) {
+        this.pointer++;
+      }
 
       this.selectedOption = this.matchingOptions[this.pointer];
       this.searchText = null;
@@ -331,26 +378,14 @@ export default {
         this.$refs.match.focus();
       });
     },
-    optionDesciption(option) {
-        
-      if (this.optionKey && this.optionLabel) {
-        return option[this.optionKey] + " " + option[this.optionLabel];
-      }
-      if (this.optionLabel) {
-        return option[this.optionLabel];
-      }
-      if (this.optionKey) {
-        return option[this.optionKey];
-      }
-
-      return option;
-    },
     handleClickOutside(e) {
-      if (!this.$el.contains(e.target)) {
+        if (this.$el.contains(e.target)) {
+            return;
+        }
+
         this.openSelect = false;
         this.searchText = null;
         this.closed = true;
-      }
     }
   }
 };
@@ -535,9 +570,9 @@ export default {
   margin-bottom: 0.5rem;
 }
 .required {
-    _color: #721c24;
-    _background-color: #f8d7da;
-    _border-color: #f5c6cb;
+  _color: #721c24;
+  _background-color: #f8d7da;
+  border-color: #f5c6cb;
 }
 .cursor-pointer {
   cursor: pointer;

@@ -7,7 +7,7 @@
 
 ## What It Does
 
-vue-single-select provides a **simple** interface to replace regular select elements with an auto-complete select like Chosen for jquery.
+vue-single-select provides a **simple** interface to replace regular select elements with an auto-complete select element like Chosen for jQuery.
 
 ## What It Does Not Do
 
@@ -85,7 +85,7 @@ Vue.component('vue-single-select', VueSingleSelect);
         option-label="reply"
         seed-an-initial-value="what's seed mean?"
         initial="seed me"
-        you-only-want-20-options-to-show="sure"
+        you-only-want-20-options-to-show="is 20 enough?"
         :max-results="20"
 ></vue-single-select>
 ```
@@ -128,7 +128,7 @@ Then all you need to do is provide some class definitions like so:
     background-color: pink;
 }
 
-/* note that there is no default styling for required input. */
+/* note that there is subtle default styling for required input. */
 .required {
     color: #721c24;
     background-color: #f8d7da;
@@ -152,7 +152,6 @@ Meh, see props below.
 
 3.  Snappy Event Handling
 
-    - tab for selecting options
     - up and down arrows for selecting options
     - enter to select first match
     - remembers selection on change
@@ -162,36 +161,46 @@ Meh, see props below.
 
     - Why are the other packages so big and actually have dependencies?
 
-5.  Mine just looks nicer
+5. It works for regular 'POST backs' to the server.
+
+    If you are doing a regular post or just gathering the form data you don't need to do anything extra to provide a name and value for the selected option.
+
+5. Mine just looks nicer
 
 6. It's simple!!
 
 ## Available Props:
+
+There are more props than I'd like. But I needed them so you might too.
 
 ```
     props: {
     value: {
       required: true
     },
-    //Give your input a name. Good for POSTS
+    // Give your element a name.
+    // Good for doing a POST
     name: {
       type: String,
       required: false,
       default: () => ""
     },
-    //Your list of options for the dropdown
+    // Your list of things for the select
     options: {
       type: Array,
       required: false,
       default: () => []
     },
-    //options can have a label, but not necessary
+    // Tells vue-single-select what key to use
+    // for generating option labels
     optionLabel: {
       type: String,
       required: false,
       default: () => null
     },
-    //options can have a value, 
+    // Tells vue-single-select the value
+    // you want populated in the select for the 
+    // input
     optionKey: {
       type: String,
       required: false,
@@ -200,20 +209,19 @@ Meh, see props below.
     placeholder: {
       type: String,
       required: false,
-      default: () => ""
+      default: () => "Search Here"
     },
     maxHeight: {
       type: String,
       default: () => "220px",
       required: false
     },
-    //give your elements an id
+    //Give your input an html element id
     inputId: {
       type: String,
       default: () => "single-select",
       required: false
     },
-    //use these to override the styling
     classes: {
       type: Object,
       required: false,
@@ -226,25 +234,64 @@ Meh, see props below.
         };
       }
     },
-    //you can set an initial value.
+    // Seed search text with initial value
     initial: {
       type: String,
       required: false,
       default: () => null
     },
-    //this helps you manage required input
     required: {
       type: Boolean,
       required: false,
       default: () => false
     },
-    //the max number of matching results that should appear in the drop down
     maxResults: {
       type: Number,
       required: false,
       default: () => 30
+    },
+    tabindex: {
+      type: String,
+      required: false,
+      default: () => {
+        return "";
+      }
+    },
+    // Tell vue-single-select what to display
+    // as the selected option
+    getOptionDescription: {
+      type: Function,
+      default(option) {
+        if (this.optionKey && this.optionLabel) {
+          return option[this.optionKey] + " " + option[this.optionLabel];
+        }
+        if (this.optionLabel) {
+          return option[this.optionLabel];
+        }
+        if (this.optionKey) {
+          return option[this.optionKey];
+        }
+            return option;
+      }
+    },
+    // Use this to actually give vue-single-select
+    // a value for doing a POST
+    getOptionValue: {
+      type: Function,
+      default(option) {
+        if (this.optionKey) {
+          return option[this.optionKey];
+        }
+        
+        if (this.optionLabel) {
+          return option[this.optionLabel];
+        }
+
+        return option;
+      }
     }
-```
+  }
+  ```
 
 ## Q&A
 
