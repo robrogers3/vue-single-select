@@ -29,7 +29,7 @@ $ npm i vue-single-select
 
 In your component:
 
-```
+```javascript
 import VueSingleSelect from "vue-single-select";
 export default {
 components: {
@@ -41,14 +41,14 @@ components: {
 
 Globally:
 
-```
+```javascript
 import VueSingleSelect from "vue-single-select";
 Vue.component('vue-single-select', VueSingleSelect);
 ```
 
 ### Use It
 
-```
+```html
 <vue-single-select
         v-model="fruit"
         :options="['apple','banana','cherry','tomato']"
@@ -58,7 +58,7 @@ Vue.component('vue-single-select', VueSingleSelect);
 
 ### Use It Again
 
-```
+```html
 <vue-single-select
         name="maybe"
         placeholder="pick a post"
@@ -75,7 +75,7 @@ Vue.component('vue-single-select', VueSingleSelect);
 
 ### Use It Again
 
-```
+```html
 <vue-single-select
         you-want-to-select-a-reply="yes"
         v-model="reply"
@@ -94,7 +94,7 @@ Vue.component('vue-single-select', VueSingleSelect);
 
 You can override some of it. Like so:
 
-```
+```html
 <vue-single-select
         id="selected-reply"
         name="a_reply"
@@ -107,7 +107,7 @@ You can override some of it. Like so:
         :classes="{
                     input: 'form-control',
                     wrapper: 'form-group',
-                    icon: 'glyphicon',
+                    icons: 'glyphicon',
                     required: 'required'
         }"
 ></vue-single-select>
@@ -115,7 +115,7 @@ You can override some of it. Like so:
 
 Then all you need to do is provide some class definitions like so:
 
-```
+```css
 .form-control {
     color: pink;
     width: 10000px;
@@ -126,13 +126,24 @@ Then all you need to do is provide some class definitions like so:
 }
 .form-group {
     background-color: pink;
+    font-size: 16px;
 }
 
-/* note that there is subtle default styling for required input. */
 .required {
     color: #721c24;
     background-color: #f8d7da;
     border-color: #f5c6cb;
+}
+
+```
+
+**Note: Bootstrap 3 Users May want to increase the size of the icons.**
+
+If so do this: 
+```css
+.icons svg {
+    height: 1em;
+    width: 1em;
 }
 ```
 
@@ -173,7 +184,7 @@ Meh, see props below.
 
 There are more props than I'd like. But I needed them so you might too.
 
-```
+```javascript
     props: {
     value: {
       required: true
@@ -222,14 +233,16 @@ There are more props than I'd like. But I needed them so you might too.
       default: () => "single-select",
       required: false
     },
+    //Customize the styling by providing 
+    //these FOUR custom style definitions.
     classes: {
       type: Object,
       required: false,
       default: () => {
         return {
           wrapper: "single-select-wrapper",
-          input: "form-control",
-          icon: "icon",
+          input: "search-input",
+          icons: "icons",
           required: "required"
         };
       }

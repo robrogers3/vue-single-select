@@ -15,8 +15,8 @@
                     :required="required" 
                     v-model="searchText">
 
-                <div @click="toggleOpenSelect" :class="[classes.icon]" class="cursor-pointer absolute flex items-center">
-                    <svg v-if="!openSelect" aria-hidden="true" viewBox="0 0 448 512">
+                <div @click="toggleDropdown" :class="[classes.icons]" class="cursor-pointer absolute flex items-center">
+                    <svg v-if="!dropdownOpen" aria-hidden="true" viewBox="0 0 448 512">
                         <path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path>
                     </svg>
                     <svg v-else aria-hidden="true" viewBox="0 0 448 512">
@@ -53,8 +53,8 @@
             <input type="hidden" :name="name"  ref="selectValue"
                 :value="getOptionValue(selectedOption)">
 
-            <div :class="classes.icon" @click="closeOut" class="cursor-pointer absolute flex items-center">
-                <svg  @click="closeOut" aria-hidden="true" viewBox="0 0 512 512">
+            <div :class="classes.icons" @click="closeOut" class="cursor-pointer absolute flex items-center">
+                <svg @click="closeOut" aria-hidden="true" viewBox="0 0 512 512">
                     <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"></path>
                 </svg>
             </div>
@@ -110,10 +110,9 @@ export default {
       default: () => {
         return {
           wrapper: "single-select-wrapper",
-          input: "form-control",
-          icon: "icon",
-          required: "required",
-          intialized: false
+          input: "search-input",
+          icons: "icons",
+          required: "required"
         };
       }
     },
@@ -184,7 +183,7 @@ export default {
     return {
       searchText: null,
       selectedOption: null,
-      openSelect: false,
+      dropdownOpen: false,
       closed: false
     };
   },
@@ -216,7 +215,7 @@ export default {
         this.$refs.search.focus();
       });
     },
-    openSelect(curr, prev) {
+    dropdownOpen(curr, prev) {
       if (curr === prev) {
         return;
       }
@@ -328,7 +327,7 @@ export default {
     },
     resetSearch() {
       this.selectedOption = null;
-      this.openSelect = false;
+      this.dropdownOpen = false;
       this.searchText = null;
     },
     switchToSearch(event) {
@@ -338,12 +337,12 @@ export default {
         this.$refs.search.focus();
       });
     },
-    toggleOpenSelect() {
-      this.openSelect = !this.openSelect;
+    toggleDropdown() {
+      this.dropdownOpen = !this.dropdownOpen;
     },
     closeOut() {
       this.selectedOption = null;
-      this.openSelect = false;
+      this.dropdownOpen = false;
       this.searchText = null;
       this.closed = true;
     },
@@ -372,7 +371,7 @@ export default {
 
       this.selectedOption = this.matchingOptions[this.pointer];
       this.searchText = null;
-      this.openSelect = false;
+      this.dropdownOpen = false;
       this.pointer = -1;
       this.$nextTick().then(() => {
         this.$refs.match.focus();
@@ -383,7 +382,7 @@ export default {
             return;
         }
 
-        this.openSelect = false;
+        this.dropdownOpen = false;
         this.searchText = null;
         this.closed = true;
     }
@@ -408,7 +407,7 @@ export default {
   border-style: solid;
 }
 .rounded {
-  border-radius: 0.25rem;
+  border-radius: 0.25em;
 }
 .text-black {
   color: #22292f;
@@ -455,15 +454,19 @@ export default {
   padding: 0;
 }
 .p-1 {
-  padding: 0.25rem;
+  padding: 0.25em;
+}
+.px-1 {
+  padding-left: 0.25em;
+  padding-right: 0.25em;
 }
 .py-2 {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 }
 .px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }
 .mt-px {
   margin-top: 1px;
@@ -496,28 +499,28 @@ export default {
   appearance: none;
 }
 .w-1 {
-  width: 0.25rem;
+  width: 0.25em;
 }
 .w-2 {
-  width: 0.5rem;
+  width: 0.5em;
 }
 .w-3 {
-  width: 0.75rem;
+  width: 0.75em;
 }
 .w-4 {
-  width: 1rem;
+  width: 1em;
 }
 .h-4 {
-  height: 1rem;
+  height: 1em;
 }
 .h-1 {
-  height: 0.25rem;
+  height: 0.25em;
 }
 .h-2 {
-  height: 0.5rem;
+  height: 0.5em;
 }
 .h-3 {
-  height: 0.75rem;
+  height: 0.75em;
 }
 .fill-current {
   fill: currentColor;
@@ -540,34 +543,34 @@ export default {
 .shadow-md {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
 }
-.form-control {
+.search-input {
   display: block;
   width: 100%;
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  padding: 0.375em 0.75em;
+  font-size: 1em;
   line-height: 1.5;
   color: #495057;
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid #ced4da;
-  border-radius: 0.25rem;
+  border-radius: 0.25em;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   box-sizing: border-box;
 }
-.icon {
-  padding: 0 1rem;
+.icons {
+  padding: 0 1em;
   right: 0;
   top: 0;
   bottom: 0;
   fill: #606f7b;
 }
-.icon > svg {
-  width: 0.75rem;
-  height: 0.75rem;
+.icons svg {
+  width: .75em;
+  height: .75em;
 }
 .single-select-wrapper {
   position: relative;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5em;
 }
 .required {
   _color: #721c24;
@@ -576,24 +579,6 @@ export default {
 }
 .cursor-pointer {
   cursor: pointer;
-}
-ol,
-ul {
-  margin: 0;
-}
-button,
-input,
-optgroup,
-select,
-textarea {
-  font-family: inherit;
-}
-button,
-input {
-  overflow: visible;
-}
-li:hover {
-  background-clip: pink;
 }
 .is-active {
   background: #dae1e7;
