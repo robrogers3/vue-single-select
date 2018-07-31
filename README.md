@@ -7,15 +7,26 @@
 
 ## What It Does
 
-vue-single-select provides a **simple** interface to replace regular select elements with an auto-complete select element like Chosen for jQuery.
+vue-single-select provides a **simple** interface to replace regular select elements with auto-complete select elements like Chosen for jQuery.
+
+This **simple**
+
+```html
+<vue-single-select      
+    v-model="fruit" 
+    :options="['apple','cherry','banana','pear', 'tomato']"
+></vue-single-select>    
+```
+
+See simple!
+
+![its simple](https://raw.githubusercontent.com/robrogers3/vue-single-select/master/simple-single-select.png)
 
 ## What It Does Not Do
 
 Nope no Multi Select. See vue-multiple-select for this.
 
 No ajax loading.
-
-No massive styling options (for now).
 
 # Usage
 
@@ -90,7 +101,7 @@ Vue.component('vue-single-select', VueSingleSelect);
 ></vue-single-select>
 ```
 
-### Dont like the Styling
+### Dont like the Styling?
 
 You can override some of it. Like so:
 
@@ -109,6 +120,8 @@ You can override some of it. Like so:
                     wrapper: 'form-group',
                     icons: 'glyphicon',
                     required: 'required'
+                    active: 'active',
+                    dropdown: 'dropdown'
         }"
 ></vue-single-select>
 ```
@@ -134,6 +147,12 @@ Then all you need to do is provide some class definitions like so:
     background-color: #f8d7da;
     border-color: #f5c6cb;
 }
+.dropdown: {
+    color: violet;
+}
+.active {
+    background-color: lemonchiffon;
+}
 
 ```
 
@@ -147,6 +166,49 @@ If so do this:
 }
 ```
 
+#### See defaults below.
+
+### Dont like the styling at all?
+
+Use the slots option to really mix it up.
+
+This is a little advanced, but it's not too hard. Take a look:
+
+```html
+<single-select
+    option-label="title"
+    v-model="thread" 
+    :options="threads" 
+    max-height="300px"
+    >
+        <template slot="option" slot-scope="{option, idx}">
+            <div style="display:flex;padding: 2px;font-size: 2rem;"
+                :class="idx % 2 ? 'emoji-happy' : 'emoji-sad'"
+                :style="idx % 2 ? 'color:red' : 'color:blue'">
+                <span style="margin-left: 1rem;">
+                    {{idx}}</span>
+                <span style="margin-left: 1rem;">
+                    {{option.title}}</span>
+            </div>
+        </template>
+    </single-select>
+```
+
+```css
+.emoji-happy::before {
+    content:"\1F600"
+}
+.emoji-sad::before {
+    content:"\1F622"
+}
+```
+The key is the **template** element.
+
+Here I give you the option and the current index. From there you can add html, add exta info, or a smiley face.
+
+And here you go:
+
+![Image of Smiley](https://raw.githubusercontent.com/robrogers3/vue-single-select/master/single-select-happy.png)
 ### Kitchen Sink
 
 Meh, see props below.
@@ -234,7 +296,7 @@ There are more props than I'd like. But I needed them so you might too.
       required: false
     },
     //Customize the styling by providing 
-    //these FOUR custom style definitions.
+    //these FIVE custom style definitions.
     classes: {
       type: Object,
       required: false,
@@ -243,7 +305,9 @@ There are more props than I'd like. But I needed them so you might too.
           wrapper: "single-select-wrapper",
           input: "search-input",
           icons: "icons",
-          required: "required"
+          required: "required",
+          activeClass: 'active',
+          dropdown: 'dropdown'
         };
       }
     },
@@ -253,16 +317,19 @@ There are more props than I'd like. But I needed them so you might too.
       required: false,
       default: () => null
     },
+    // Make it required
     required: {
       type: Boolean,
       required: false,
       default: () => false
     },
+    // Number of results to show at a time
     maxResults: {
       type: Number,
       required: false,
       default: () => 30
     },
+    // meh...
     tabindex: {
       type: String,
       required: false,
@@ -315,7 +382,7 @@ Seriously, this is just a widget why does it need knowledge of it's data source?
 
 Q. _What about Templating?_
 
-A. Good question. Really. Working on it.
+A. What about it? Just use the new scoped slots!
 
 Q. _What about Multiple Selects?_
 

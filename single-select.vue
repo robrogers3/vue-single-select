@@ -2,54 +2,60 @@
     <div ref="vuesingleselect">
         <div v-if="!selectedOption" :class="classes.wrapper">
             <div class="relative inline-block w-full">
-                <input ref="search" :class="[classes.input, isRequired]"  :id="inputId" 
+                <input ref="search" :class="[classes.input, isRequired]"  :id="inputId"
                     @click="seedSearchText"
                     @focus="seedSearchText"
-                    @keyup.enter="setOption" 
+                    @keyup.enter="setOption"
                     @keyup.down="movePointerDown"
                     @keydown.tab.stop="closeOut"
                     @keydown.esc.stop="closeOut"
                     @keyup.up="movePointerUp"
-                    :placeholder="placeholder" 
+                    :placeholder="placeholder"
                     autocomplete="off"
-                    :required="required" 
+                    :required="required"
                     v-model="searchText">
 
-                <div @click="toggleDropdown" :class="[classes.icons]" class="cursor-pointer absolute flex items-center">
-                    <svg v-if="!dropdownOpen" aria-hidden="true" viewBox="0 0 448 512">
-                        <path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path>
-                    </svg>
-                    <svg v-else aria-hidden="true" viewBox="0 0 448 512">
-                        <path d="M240.971 130.524l194.343 194.343c9.373 9.373 9.373 24.569 0 33.941l-22.667 22.667c-9.357 9.357-24.522 9.375-33.901.04L224 227.495 69.255 381.516c-9.379 9.335-24.544 9.317-33.901-.04l-22.667-22.667c-9.373-9.373-9.373-24.569 0-33.941L207.03 130.525c9.372-9.373 24.568-9.373 33.941-.001z"></path>
-                    </svg>
-                </div>
+            <div @click="toggleDropdown" :class="[classes.icons]" class="cursor-pointer absolute flex items-center">
+                <svg v-if="!dropdownOpen" aria-hidden="true" viewBox="0 0 448 512">
+                    <path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path>
+                </svg>
+                <svg v-else aria-hidden="true" viewBox="0 0 448 512">
+                    <path d="M240.971 130.524l194.343 194.343c9.373 9.373 9.373 24.569 0 33.941l-22.667 22.667c-9.357 9.357-24.522 9.375-33.901.04L224 227.495 69.255 381.516c-9.379 9.335-24.544 9.317-33.901-.04l-22.667-22.667c-9.373-9.373-9.373-24.569 0-33.941L207.03 130.525c9.372-9.373 24.568-9.373 33.941-.001z"></path>
+                </svg>
+            </div>
 
-                <ul tabindex="-1" ref="options" v-if="matchingOptions" 
-                    :style="{'max-height': maxHeight}" style="z-index: 100;padding"
-                    class="shadow-md absolute w-full overflow-auto appearance-none border rounded mt-px  text-grey-darker  border-grey-lighter bg-white list-reset leading-normal text-left"
-                    >
-                    <li tabindex="-1" 
-                         v-for="(option, idx) in matchingOptions" :key="idx"
-                         :class="{ 'is-active': idx === pointer }" 
-                         class="cursor-pointer px-1 py-2 outline-none"
-                            @blur="handleClickOutside($event)"
-                            @mouseover="pointer = idx"
-                            @keyup.enter="setOption()" 
-                            @keyup.up="movePointerUp()"
-                            @keyup.down="movePointerDown()"
-                            @click.prevent="setOption()"
-                            v-text="getOptionDescription(option)">
-                    </li>
-                </ul>
+            <ul tabindex="-1" ref="options" v-if="matchingOptions"
+                :style="{'max-height': maxHeight}" style="z-index: 100;padding"
+                :class=[classes.dropdown]
+                class="absolute w-full overflow-auto appearance-none mt-px  list-reset"
+                >
+                <li tabindex="-1"
+                    v-for="(option, idx) in matchingOptions" :key="idx"
+                    :class="idx === pointer ? classes.activeClass : ''"
+                    class="cursor-pointer outline-none"
+                    @blur="handleClickOutside($event)"
+                    @mouseover="setPointerIdx(idx)"
+                    @keyup.enter="setOption()"
+                    @keyup.up="movePointerUp()"
+                    @keyup.down="movePointerDown()"
+                    @click.prevent="setOption()"
+                >
+                    <slot name="option" v-bind="{option,idx}">
+                        {{ getOptionDescription(option) }}
+                    </slot>
+                </li>
+            </ul>
             </div>
         </div>
 
         <div :class="classes.wrapper" v-if="selectedOption">
-            <input id="inputId" :class="[classes.input]" ref="match" :required="required" 
-                @input="switchToSearch($event)" 
+            <input id="inputId" :class="[classes.input]" ref="match" :required="required"
+                @input="switchToSearch($event)"
                 @click="switchToSearch($event)"
-                :placeholder="placeholder" :value="getOptionDescription(selectedOption)">
-        
+                :placeholder="placeholder"
+                :value="getOptionDescription(selectedOption)"
+            >
+
             <input type="hidden" :name="name"  ref="selectValue"
                 :value="getOptionValue(selectedOption)">
 
@@ -112,7 +118,9 @@ export default {
           wrapper: "single-select-wrapper",
           input: "search-input",
           icons: "icons",
-          required: "required"
+          required: "required",
+          activeClass: "active",
+          dropdown: "dropdown"
         };
       }
     },
@@ -219,7 +227,7 @@ export default {
       if (curr === prev) {
         return;
       }
-    
+
       if (this.selectedOption) {
         this.searchText = this.getOptionDescription(this.selectedOption);
         return;
@@ -250,7 +258,7 @@ export default {
       }
 
       if (this.selectedOption) {
-          return "";
+        return "";
       }
 
       return "required";
@@ -313,17 +321,19 @@ export default {
     }
   },
   methods: {
+    setPointerIdx(idx) {
+      this.pointer = idx;
+    },
     seedSearchText() {
-        if (this.searchText && this.searchText.length) {
-            return;
-        }
-
-        this.searchText = "";
-
-        if (this.closed) {
-          this.closed = false;
+      if (this.searchText !== null) {
+        return;
       }
 
+      this.searchText = "";
+
+      if (this.closed) {
+        this.closed = false;
+      }
     },
     resetSearch() {
       this.selectedOption = null;
@@ -378,13 +388,13 @@ export default {
       });
     },
     handleClickOutside(e) {
-        if (this.$el.contains(e.target)) {
-            return;
-        }
+      if (this.$el.contains(e.target)) {
+        return;
+      }
 
-        this.dropdownOpen = false;
-        this.searchText = null;
-        this.closed = true;
+      this.dropdownOpen = false;
+      this.searchText = null;
+      this.closed = true;
     }
   }
 };
@@ -411,12 +421,6 @@ export default {
 }
 .text-black {
   color: #22292f;
-}
-.text-grey-darker {
-  color: #606f7b;
-}
-.text-grey-light {
-  color: #dae1e7;
 }
 .border-grey-lighter {
   border-color: #ced4da;
@@ -446,7 +450,6 @@ export default {
 .relative {
   position: relative;
 }
-
 .items-center {
   align-items: center;
 }
@@ -565,8 +568,8 @@ export default {
   fill: #606f7b;
 }
 .icons svg {
-  width: .75em;
-  height: .75em;
+  width: 0.75em;
+  height: 0.75em;
 }
 .single-select-wrapper {
   position: relative;
@@ -580,7 +583,20 @@ export default {
 .cursor-pointer {
   cursor: pointer;
 }
-.is-active {
+.dropdown {
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12),
+    0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  color: #606f7b;
+  border-radius: 0.25em;
+  line-height: 1.25;
+  text-align: left;
+}
+.dropdown > li {
+  padding: 0.5em 0.75em;
+}
+.active {
   background: #dae1e7;
 }
 </style>
