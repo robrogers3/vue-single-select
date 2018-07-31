@@ -1,6 +1,6 @@
 {
   "name": "vue-single-select",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "single select autocomplete dropdown for vue",
   "main": "single-select.vue",
   "scripts": {
