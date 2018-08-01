@@ -9,6 +9,8 @@
 
 vue-single-select provides a **simple** interface to replace regular select elements with auto-complete select elements like Chosen for jQuery.
 
+## How Simple?
+
 This **simple**
 
 ```html
@@ -18,10 +20,7 @@ This **simple**
 ></vue-single-select>    
 ```
 
-See simple!
-
-![its simple](https://raw.githubusercontent.com/robrogers3/vue-single-select/master/simple-single-select.png)
-
+<img style="width: 500px" src="https://raw.githubusercontent.com/robrogers3/vue-single-select/master/simple-single-select.png">
 
 ## What It Does Not Do
 
@@ -404,7 +403,7 @@ There are more props than I'd like. But I needed them so you might too.
 
 Q. _What about Ajax?_
 
-A. Good question. Why aren't you passing that in as a prop?
+A. Good question. Why aren't you passing data in as a prop?
 Seriously, this is just a widget why does it need knowledge of it's data source?
 
 Q. _What about Templating?_
@@ -414,10 +413,3 @@ A. What about it? Just use the new scoped slots!
 Q. _What about Multiple Selects?_
 
 A. Nope not found here.
-
-Q. _Why doesn't it work?_
-
-A. You know I really didn't make this to be used without a bundler and the vue-loader. If you don't know what this means then checkout **Parcel** or **Vue Cli** to get started. You're going to want it anyway.
-
-Or if you are ready to roll but need a helping hand use **Laravel Mix**
-It's your one stop to success!
