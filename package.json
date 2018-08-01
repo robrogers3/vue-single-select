@@ -1,27 +1,56 @@
 {
-  "name": "vue-single-select",
-  "version": "1.0.12",
-  "description": "single select autocomplete dropdown for vue",
-  "main": "single-select.vue",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/robrogers3/vue-single-select.git"
-  },
-  "keywords": [
-    "vue",
-    "js",
-    "dropdown",
-    "autocomplete",
-    "select",
-    "element"
-  ],
-  "author": "Rob Rogers",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/robrogers3/vue-single-select/issues"
-  },
-  "homepage": "https://github.com/robrogers3/vue-single-select#readme"
+    "name": "vue-single-select",
+    "version": "1.0.21",
+    "description": "single select autocomplete dropdown for vue",
+    "main": "dist/index",
+    "unpkg": "dist/vue-single-select.js",
+    "browser": {
+        "./sfc": "dist/vue-single-select.vue"
+    },
+    "scripts": {
+        "prepublish": "npm build",
+        "serve": "vue-cli-service serve",
+        "vbuild": "vue-cli-service build",
+        "lint": "vue-cli-service lint",
+        "dev": "cross-env NODE_ENV=development webpack",
+        "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/robrogers3/vue-single-select.git"
+    },
+    "keywords": [
+        "vue",
+        "js",
+        "dropdown",
+        "autocomplete",
+        "select",
+        "element"
+    ],
+    "author": "Rob Rogers",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/robrogers3/vue-single-select/issues"
+    },
+    "homepage": "https://github.com/robrogers3/vue-single-select#readme",
+    "peerDependencies": {
+        "vue": "2.x"
+    },
+    "devDependencies": {
+        "babel-core": "^6.26.0",
+        "babel-loader": "^7.1.2",
+        "babel-preset-env": "^1.6.0",
+        "babel-preset-stage-3": "^6.24.1",
+        "copy-webpack-plugin": "^4.5.2",
+        "cross-env": "^5.0.5",
+        "css-loader": "^0.28.7",
+        "file-loader": "^1.1.4",
+        "vue": "^2.5.11",
+        "vue-loader": "14.2.2",
+        "vue-template-compiler": "^2.4.4",
+        "webpack": "^4.16.3",
+        "webpack-cli": "^3.1.0",
+        "webpack-dev-server": "^2.9.1",
+        "webpack-merge": "^4.1.3"
+    }
 }

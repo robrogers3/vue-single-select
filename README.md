@@ -22,17 +22,44 @@ See simple!
 
 ![its simple](https://raw.githubusercontent.com/robrogers3/vue-single-select/master/simple-single-select.png)
 
+
 ## What It Does Not Do
 
 Nope no Multi Select. See vue-multiple-select for this.
 
 No ajax loading.
 
-# Usage
+## Usage
 
-### Install it
+### Install and Use Via CDN
 
+```html
+<div id="app">
+    <lable>Choose a fruit!</lable>
+    <vue-single-select
+	    v-model="fruit"
+	    :options="fruits"
+    ></vue-single-select>
+</div>
 ```
+
+```html
+<script src="https://unpkg.com/vue@latest"></script>
+<script src="https://unpkg.com/vue-single-select@latest"></script>
+<script>
+ new Vue({
+     el:"#app",
+     data: {
+         fruit: null,
+         fruits: ['peach','pear','apple','orange']
+     }
+ });
+</script>
+````
+
+### Install Via NPM
+
+```bash
 $ npm i vue-single-select
 ```
 

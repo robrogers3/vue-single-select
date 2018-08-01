@@ -115,6 +115,7 @@ export default {
       required: false,
       default: () => {
         return {
+            pointer: -1,
           wrapper: "single-select-wrapper",
           input: "search-input",
           icons: "icons",
@@ -590,8 +591,8 @@ export default {
   background-color: #fff;
   color: #606f7b;
   border-radius: 0.25em;
-  line-height: 1.25;
-  text-align: left;
+    line-height: 1.25;
+    text-align: left;
 }
 .dropdown > li {
   padding: 0.5em 0.75em;
