@@ -315,7 +315,7 @@ There are more props than I'd like. But I needed them so you might too.
       default: () => "220px",
       required: false
     },
-    //Give your input an html element id
+    // Give your input an html element id
     inputId: {
       type: String,
       default: () => "single-select",
