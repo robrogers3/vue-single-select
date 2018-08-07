@@ -24,7 +24,9 @@ This **simple**
 
 ## What It Does Not Do
 
-Nope no Multi Select. See vue-multiple-select for this.
+Nope no Multi Select. See vue-multi-select for this.
+
+[Vue Single Select](https://www.npmjs.com/package/vue-simple-multi-select)
 
 No ajax loading.
 
