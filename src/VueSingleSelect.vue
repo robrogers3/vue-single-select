@@ -181,6 +181,10 @@ export default {
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
     document.addEventListener("keyup", this.handleClickOutside);
+    if (this.value) {
+      this.selectedOption = this.value;
+      return;
+    }
     this.searchText = this.initial;
   },
   destroyed() {
@@ -286,10 +290,10 @@ export default {
                 .toString()
                 .toLowerCase()
                 .includes(this.searchText.toString().toLowerCase()) ||
-              this.searchText
-                .toString()
-                .toLowerCase()
-                .includes(option[this.optionKey].toString().toLowerCase())
+                option[this.optionKey]
+                  .toString()
+                  .toLowerCase()
+                  .includes(this.searchText.toString().toLowerCase())
             );
           })
           .slice(0, this.maxResults);
@@ -298,32 +302,32 @@ export default {
       if (this.optionLabel) {
         return this.options
           .filter(option =>
-            option[this.optionLabel]
-              .toString()
-              .toLowerCase()
-              .includes(this.searchText.toString().toLowerCase())
-          )
+                  option[this.optionLabel]
+                  .toString()
+                  .toLowerCase()
+                  .includes(this.searchText.toString().toLowerCase())
+                 )
           .slice(0, this.maxResults);
       }
 
       if (this.optionKey) {
         return this.options
           .filter(option =>
-            this.searchText
-              .toString()
-              .toLowerCase()
-              .includes(option[this.optionKey].toString().toLowerCase())
-          )
+                  option[this.optionKey]
+                  .toString()
+                  .toLowerCase()
+                  .includes(this.searchText.toString().toLowerCase())
+                 )
           .slice(0, this.maxResults);
       }
 
       return this.options
         .filter(option =>
-          option
-            .toString()
-            .toLowerCase()
-            .includes(this.searchText.toString().toLowerCase())
-        )
+                option
+                .toString()
+                .toLowerCase()
+                .includes(this.searchText.toString().toLowerCase())
+               )
         .slice(0, this.maxResults);
     }
   },

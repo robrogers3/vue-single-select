@@ -1,6 +1,6 @@
 {
     "name": "vue-single-select",
-    "version": "1.0.22",
+    "version": "1.0.21",
     "description": "single select autocomplete dropdown for vue",
     "main": "dist/index",
     "unpkg": "dist/vue-single-select.js",
