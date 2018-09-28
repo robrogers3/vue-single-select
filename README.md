@@ -6,8 +6,7 @@
 [Check it out on Code Pen](https://codepen.io/robrogers3/full/WKjGZE)
 
 ## What It Does
-
-vue-single-select provides a **simple** interface to replace regular select elements with auto-complete select elements like Chosen for jQuery.
+vue-single-select provides a ** simple** component for making long, unwieldy select boxes more friendly, like Chosen for jQuery.
 
 ## How Simple?
 
@@ -24,19 +23,14 @@ This **simple**
 
 ## What It Does Not Do
 
-Nope no Multi Select. See vue-multi-select for this.
+Nope no Multi Select. See vue-taggable-select for this.
 
-[Vue Single Select](https://www.npmjs.com/package/vue-simple-multi-select)
-
-No ajax loading.
-
-## Usage
-
+[Vue Taggable Select](https://www.npmjs.com/package/vue-taggable-select)
 ### Install and Use Via CDN
 
 ```html
 <div id="app">
-    <lable>Choose a fruit!</lable>
+    <label>Choose a fruit!</label>
     <vue-single-select
 	    v-model="fruit"
 	    :options="fruits"
@@ -414,4 +408,4 @@ A. What about it? Just use the new scoped slots!
 
 Q. _What about Multiple Selects?_
 
-A. Nope not found here.
+A. Nope not found here. See vue-taggable-select

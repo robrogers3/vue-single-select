@@ -42,7 +42,9 @@ var config = {
 		    to: path.resolve(__dirname + '/dist/'),
 		    ignore: [
 			'*~',
-			'.DS_Store'
+		      '.DS_Store',
+                      'App.vue',
+                      'main.js'
 		    ]
 		}
 	    ]
