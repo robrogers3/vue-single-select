@@ -7,8 +7,8 @@
              @focus="seedSearchText"
              @keyup.enter="setOption"
              @keyup.down="movePointerDown"
-             @keydown.tab.stop="closeOut"
-             @keydown.esc.stop="closeOut"
+             @keyup.tab.stop="closeOut"
+             @keyup.esc.stop="closeOut"
              @keyup.up="movePointerUp"
              :placeholder="placeholder"
              autocomplete="off"
@@ -54,7 +54,7 @@
            @click="switchToSearch($event)"
            :value="getOptionDescription(selectedOption)"
            >
-    <input type="hidden" :name="name"  ref="selectValue" :value="getOptionValue(selectedOption)">
+    <input type="hidden" :name="name"  ref="selectedValue" :value="getOptionValue(selectedOption)">
 
     <div class="flex absolute items-center" :class="classes.icons">
       <svg aria-hidden="true" @click="closeOut" class="cursor-pointer" viewBox="0 0 512 512">
@@ -343,8 +343,10 @@ export default {
       }
     },
     switchToSearch(event) {
+      this.$refs.selectedValue.value = null;
       this.searchText = event.target.value;
       this.selectedOption = null;
+
       this.$nextTick().then(() => {
         this.$refs.search.focus();
       });

@@ -6,6 +6,7 @@
             option-label="a_title"
             option-key="id"
             initial="goose"
+            name="dude"
         ></vue-single-select>    
         <form class="p-2 form w-full bg-x" style="xbackground: yellow" @submit.prevent>
             <div class="mt-1">

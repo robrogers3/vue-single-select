@@ -409,3 +409,7 @@ A. What about it? Just use the new scoped slots!
 Q. _What about Multiple Selects?_
 
 A. Nope not found here. See vue-taggable-select
+
+Q. _Can I trust this?_
+
+A. Yep. It's backed by tests using jest and vue test utils.

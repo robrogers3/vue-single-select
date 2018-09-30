@@ -67,8 +67,18 @@ describe('VueSingleSelect', () => {
     click('li:first-child')
     has('2 bar', '.search-input')
   })
-  
-  it('it allows you to unselect an option', () => {
+  it('can toggle the dropdown', () => {
+    expect(wrapper.findAll('ul').length).toBe(0)
+    click('svg');
+    expect(wrapper.findAll('ul').length).toBe(1)
+  });
+  it('can escape out of the input', () => {
+    focus('.search-input')
+    expect(wrapper.findAll('ul').length).toBe(1)
+    triggerKeyUp('.search-input', 'tab')
+    expect(wrapper.findAll('ul').length).toBe(0)
+  })
+  it('allows you to unselect an option', () => {
     type('cher', '.search-input')
     see('cherry', 'ul')
     see('cherry', 'li')
@@ -77,11 +87,9 @@ describe('VueSingleSelect', () => {
     click('svg')
     has('', 'input')
   })
-  
   it('shows no items when there is no search input', () => {
     expect(wrapper.findAll('li').length).toBe(0)
   })
-  
   it('shows no items when there are no matching items', () => {
     type('nono', '.search-input')
     expect(wrapper.findAll('li').length).toBe(0)
@@ -104,7 +112,6 @@ describe('VueSingleSelect', () => {
     expect(wrapper.findAll('li').length).toEqual(someOptions.length)
   })
   it('only shows the maximum amount of options', () => {
-    let max = 3
     wrapper.setProps({
       maxResults: 3
     })
@@ -117,7 +124,6 @@ describe('VueSingleSelect', () => {
         return option + ' zed'
       }
     })
-
     focus('.search-input')
     see('apple zed', 'li:first-child')
     type('cherry', '.search-input')
@@ -138,17 +144,18 @@ describe('VueSingleSelect', () => {
     expect(nameInput.element.value).toBe('cherry fred')
   })
 
-  it.only('updating selected resets search', () => {
+  it('updating selected resets search', () => {
     wrapper.setProps({
       name: 'fruit'
     })
     type('cher', '.search-input')
     click('li:first-child')
-    const nameInput = wrapper.find('input[name=fruit]')
-    expect(nameInput.element.value).toBe('cherry')    
+    has('cherry', '.search-input');
+    expect(wrapper.find('input[name=fruit]').element.value).toBe('cherry')
+    click({ ref: 'match' })
+    expect(wrapper.find({ ref: 'selectedValue' }).exists()).toBe(false)
   })
 });
-
 const peek = (opt) => {
   console.log('peek', wrapper.vm[opt])
 };
