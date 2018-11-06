@@ -2,7 +2,9 @@
 <div ref="vuesingleselect">
   <div v-if="!selectedOption" :class="classes.wrapper">
     <div class="relative inline-block w-full">
-      <input ref="search" :class="[classes.input, isRequired]"  :id="inputId"
+      <input ref="search"
+             :class="[classes.input, isRequired]"
+             :id="inputId"
              @click="seedSearchText"
              @focus="seedSearchText"
              @keyup.enter="setOption"
@@ -49,7 +51,10 @@
   </div>
 
   <div :class="classes.wrapper" v-if="selectedOption">
-    <input id="inputId" :class="[classes.input]" ref="match" :required="required"
+    <input :id="inputId"
+           :class="[classes.input]"
+           ref="match"
+           :required="required"
            @input="switchToSearch($event)"
            @click="switchToSearch($event)"
            :value="getOptionDescription(selectedOption)"
@@ -191,52 +196,23 @@ export default {
     return {
       searchText: null,
       selectedOption: null,
-      dropdownOpen: false,
-      closed: false
+      dropdownOpen: false
     };
   },
   watch: {
     value(curr, prev) {
-      if (curr === prev) {
-        return;
-      }
-
       this.selectedOption = curr;
     },
     searchText(curr, prev) {
       if (curr !== prev) {
         this.pointer = -1;
       }
-      if (curr) {
-        this.closed = false;
-      }
     },
     selectedOption(curr, prev) {
-      if (curr === prev) {
-        return;
-      }
-
       this.$emit("input", curr);
-
-      if (this.closed) {
-        return;
-      }
-
-      if (curr) {
-        return;
-      }
-
-      this.$nextTick().then(() => {
-        this.$refs.search.focus();
-      });
     },
     dropdownOpen(curr, prev) {
       if (curr === prev) {
-        return;
-      }
-
-      if (this.selectedOption) {
-        this.searchText = this.getOptionDescription(this.selectedOption);
         return;
       }
 
@@ -257,10 +233,6 @@ export default {
   computed: {
     isRequired() {
       if (!this.required) {
-        return "";
-      }
-
-      if (!this.closed) {
         return "";
       }
 
@@ -337,19 +309,12 @@ export default {
       }
 
       this.searchText = "";
-
-      if (this.closed) {
-        this.closed = false;
-      }
     },
     switchToSearch(event) {
       this.$refs.selectedValue.value = null;
       this.searchText = event.target.value;
       this.selectedOption = null;
-
-      this.$nextTick().then(() => {
-        this.$refs.search.focus();
-      });
+      this.dropdownOpen = true;
     },
     toggleDropdown() {
       this.dropdownOpen = !this.dropdownOpen;
@@ -358,7 +323,6 @@ export default {
       this.selectedOption = null;
       this.dropdownOpen = false;
       this.searchText = null;
-      this.closed = true;
     },
     movePointerDown() {
       if (!this.matchingOptions) {
@@ -398,7 +362,6 @@ export default {
 
       this.dropdownOpen = false;
       this.searchText = null;
-      this.closed = true;
     }
   }
 };

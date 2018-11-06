@@ -87,6 +87,46 @@ describe('VueSingleSelect', () => {
     click('svg')
     has('', 'input')
   })
+  it('it seeds the search text from the selected option', () => {
+    wrapper.setProps({
+      required: true
+    })
+    expect(wrapper.find({ref: 'match'}).exists()).toBe(false)
+    type('cher', '.search-input')
+    see('cherry', 'ul')
+    see('cherry', 'li')
+    click('li:first-child')
+    has('cherry', '.search-input')
+    expect(wrapper.find({ref: 'match'}).exists()).toBe(true)
+    type('cherry', '.search-input')
+    expect(wrapper.find({ref: 'match'}).exists()).toBe(false)
+    has('cherry', '.search-input')
+  })
+  it('will set the required prop on the search element', () => {
+    wrapper.setProps({
+      required: true
+    })
+    expect(wrapper.find('input[required=required]').exists()).toBe(true)
+    let el = wrapper.find('input[required=required]')
+    expect(el.element.classList.toString().includes('required')).toBe(true)
+    type('cher', '.search-input')
+    click('li:first-child')
+    expect(wrapper.find('input[required=required]').exists()).toBe(true)    
+    el = wrapper.find('input[required=required]')
+    expect(el.element.classList.toString().includes('required')).toBe(false)
+
+  })
+  it('toggles the search input when toggling dropdown', () => {
+    type('cher', '.search-input')
+    see('cherry', 'ul')
+    see('cherry', 'li')
+    click('li:first-child')
+    has('cherry', '.search-input')
+    focus('.search-input')
+    has('cherry', '.search-input')
+    click('svg')
+    has('', '.search-input')
+  })
   it('shows no items when there is no search input', () => {
     expect(wrapper.findAll('li').length).toBe(0)
   })

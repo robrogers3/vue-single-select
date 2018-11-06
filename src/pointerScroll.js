@@ -18,7 +18,7 @@ export default  {
        * overflow bounds.
        * @returns {*}
        */
-      maybeAdjustScroll() {
+      maybeAdjustScroll () {
         let pixelsToPointerTop = this.pixelsToPointerTop()
         let pixelsToPointerBottom = this.pixelsToPointerBottom()
   

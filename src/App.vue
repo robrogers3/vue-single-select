@@ -3,9 +3,10 @@
         <vue-single-select      
             v-model="thread" 
             :options="threads"
+            :required="true"
             option-label="a_title"
+            :getOptionDescription="getCustomDescription"
             option-key="id"
-            initial="goose"
             name="dude"
         ></vue-single-select>    
         <form class="p-2 form w-full bg-x" style="xbackground: yellow" @submit.prevent>
@@ -70,6 +71,10 @@
          //this.thread = this.threads[1]
      },
      methods: {
+         getCustomDescription(opt) {
+             return opt.a_title
+         },
+     
          addOption(opt) {
              //this.myThreads.push(opt);
              //this.threads.push(opt);
