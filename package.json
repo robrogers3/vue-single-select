@@ -1,6 +1,6 @@
 {
   "name": "vue-single-select",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
