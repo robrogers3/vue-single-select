@@ -26,7 +26,8 @@ This **simple**
 Nope no Multi Select. See vue-taggable-select for this.
 
 [Vue Taggable Select](https://www.npmjs.com/package/vue-taggable-select)
-### Install and Use Via CDN
+
+### Install or Use Via CDN
 
 ```html
 <div id="app">
@@ -260,9 +261,9 @@ Meh, see props below.
 
     If you are doing a regular post or just gathering the form data you don't need to do anything extra to provide a name and value for the selected option.
 
-5. Mine just looks nicer
+6. Mine just looks nicer
 
-6. It's simple!!
+7. It's simple!!
 
 ## Available Props:
 
@@ -363,7 +364,7 @@ There are more props than I'd like. But I needed them so you might too.
     // as the selected option
     getOptionDescription: {
       type: Function,
-      default(option) {
+      default: function (option) {
         if (this.optionKey && this.optionLabel) {
           return option[this.optionKey] + " " + option[this.optionLabel];
         }
@@ -380,7 +381,7 @@ There are more props than I'd like. But I needed them so you might too.
     // a value for doing a POST
     getOptionValue: {
       type: Function,
-      default(option) {
+      default: function (option) {
         if (this.optionKey) {
           return option[this.optionKey];
         }
@@ -390,6 +391,44 @@ There are more props than I'd like. But I needed them so you might too.
         }
 
         return option;
+      }
+    },
+    //Default filtering, provide your own for fun
+    //Like startsWith instead of includes
+    filterBy: {
+      type: Function,
+      default: function (option) {
+        if (this.optionLabel && this.optionKey) {
+          return (
+            option[this.optionLabel]
+              .toString()
+              .toLowerCase()
+              .includes(this.searchText.toString().toLowerCase()) ||
+              option[this.optionKey]
+              .toString()
+              .toLowerCase()
+              .includes(this.searchText.toString().toLowerCase())
+          )
+        }
+        
+        if (this.optionLabel) {
+          return option[this.optionLabel]
+            .toString()
+            .toLowerCase()
+            .includes(this.searchText.toString().toLowerCase())
+        }
+        
+        if (this.optionKey) {
+          option[this.optionKey]
+            .toString()
+            .toLowerCase()
+            .includes(this.searchText.toString().toLowerCase())
+        }
+        
+        return option
+          .toString()
+          .toLowerCase()
+          .includes(this.searchText.toString().toLowerCase())
       }
     }
   }
@@ -401,6 +440,10 @@ Q. _What about Ajax?_
 
 A. Good question. Why aren't you passing data in as a prop?
 Seriously, this is just a widget why does it need knowledge of it's data source?
+
+Q. _How do I change how items are filtered?_
+
+A. Easy. See prop above, `matchingOptions`. Just override it with your own method as a prop.
 
 Q. _What about Templating?_
 

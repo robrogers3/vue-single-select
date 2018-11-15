@@ -183,7 +183,28 @@ describe('VueSingleSelect', () => {
     const nameInput = wrapper.find('input[name=fruit]')
     expect(nameInput.element.value).toBe('cherry fred')
   })
-
+  it('allows for a custom matching options prop', () => {
+    wrapper.setProps({
+      filterBy: function (option) {
+        return option
+          .toString()
+          .toLowerCase()
+          .includes(this.searchText.toString().toLowerCase())
+      }
+    })
+    type('erry', '.search-input');
+    see('cherry', 'li:first-child')
+    wrapper.setProps({
+      filterBy: function (option) {
+        return option
+          .toString()
+          .toLowerCase()
+          .startsWith(this.searchText.toString().toLowerCase())
+      }
+    })
+    type('erry', '.search-input');
+    notSee('cherry')
+  });
   it('updating selected resets search', () => {
     wrapper.setProps({
       name: 'fruit'
@@ -206,6 +227,10 @@ const has = (text, selector) => {
 let see = (text, selector) => {
   let wrap = selector ? wrapper.find(selector) : wrapper
   expect(wrap.html()).toContain(text)
+};
+let notSee = (text, selector) => {
+  let wrap = selector ? wrapper.find(selector) : wrapper
+  expect(wrap.html()).not.toContain(text)
 };
 let type = (text, selector) => {
   let node = wrapper.find(selector);
