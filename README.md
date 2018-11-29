@@ -6,7 +6,7 @@
 [Check it out on Code Pen](https://codepen.io/robrogers3/full/WKjGZE)
 
 ## What It Does
-vue-single-select provides a ** simple** component for making long, unwieldy select boxes more friendly, like Chosen for jQuery.
+vue-single-select provides a **simple** component for making long, unwieldy select boxes more friendly, like Chosen for jQuery.
 
 ## How Simple?
 
@@ -92,6 +92,19 @@ Vue.component('vue-single-select', VueSingleSelect);
 
 ### Use It Again
 
+#### Specify a custom option label and option value
+
+Here each option refereneces a post title in the **posts** list in data.
+The option value references a post id in the same list. Like:
+
+```
+posts: [{title: "ok dude", id: 1}, {title: "awesome dude", id: 2}, ...]
+```
+
+```
+
+```
+
 ```html
 <vue-single-select
         name="maybe"
@@ -108,6 +121,14 @@ Vue.component('vue-single-select', VueSingleSelect);
 ```
 
 ### Use It Again
+
+#### Specify a custom option label.
+
+Here the Option Label references a reply the **replies** list in data.
+With a format like: 
+```
+replies: [{reply: "ok dude"}, {reply: "awesome dude"}, ...]
+```
 
 ```html
 <vue-single-select
