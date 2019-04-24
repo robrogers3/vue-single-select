@@ -5,13 +5,12 @@
                 <input ref="search"
                        :class="[classes.input, isRequired]"
                        :id="inputId"
-                       @click="seedSearchText"
                        @focus="seedSearchText"
-                       @keyup.enter="setOption"
-                       @keyup.down="movePointerDown"
-                       @keyup.tab.stop="closeOut"
+                       @keydown.enter.prevent="setOption"
+                       @keydown.tab="setOption"
                        @keyup.esc.stop="closeOut"
                        @keyup.up="movePointerUp"
+                       @keyup.down="movePointerDown"
                        :placeholder="placeholder"
                        autocomplete="off"
                        :required="required"
@@ -35,12 +34,10 @@
                         v-for="(option, idx) in matchingOptions" :key="idx"
                         :class="idx === pointer ? classes.activeClass : ''"
                         class="cursor-pointer outline-none"
-                        @blur="handleClickOutside($event)"
                         @mouseover="setPointerIdx(idx)"
-                        @keyup.enter="setOption()"
                         @keyup.up="movePointerUp()"
                         @keyup.down="movePointerDown()"
-                        @click.prevent="setOption()"
+                        @click.prevent="setOption"
                     >
                         <slot name="option" v-bind="{option,idx}">
                             {{ getOptionDescription(option) }}
@@ -70,46 +67,46 @@
     </div>
 </template>
 <script>
-import pointerScroll from "./pointerScroll";
+import pointerScroll from './pointerScroll';
 export default {
   props: {
     value: {
-      required: true
+      required: true,
     },
     name: {
       type: String,
       required: false,
-      default: () => ""
+      default: () => '',
     },
     options: {
       type: Array,
       required: false,
-      default: () => []
+      default: () => [],
     },
     optionLabel: {
       type: String,
       required: false,
-      default: () => null
+      default: () => null,
     },
     optionKey: {
       type: String,
       required: false,
-      default: () => null
+      default: () => null,
     },
     placeholder: {
       type: String,
       required: false,
-      default: () => "Search Here"
+      default: () => 'Search Here',
     },
     maxHeight: {
       type: String,
-      default: () => "220px",
-      required: false
+      default: () => '220px',
+      required: false,
     },
     inputId: {
       type: String,
-      default: () => "single-select",
-      required: false
+      default: () => 'single-select',
+      required: false,
     },
     classes: {
       type: Object,
@@ -117,42 +114,42 @@ export default {
       default: () => {
         return {
           pointer: -1,
-          wrapper: "single-select-wrapper",
-          input: "search-input",
-          icons: "icons",
-          required: "required",
-          activeClass: "active",
-          dropdown: "dropdown"
+          wrapper: 'single-select-wrapper',
+          input: 'search-input',
+          icons: 'icons',
+          required: 'required',
+          activeClass: 'active',
+          dropdown: 'dropdown',
         };
-      }
+      },
     },
     initial: {
       type: String,
       required: false,
-      default: () => null
+      default: () => null,
     },
     required: {
       type: Boolean,
       required: false,
-      default: () => false
+      default: () => false,
     },
     maxResults: {
       type: Number,
       required: false,
-      default: () => 30
+      default: () => 30,
     },
     tabindex: {
       type: String,
       required: false,
       default: () => {
-        return "";
-      }
+        return '';
+      },
     },
     getOptionDescription: {
       type: Function,
-      default: function (option) {
+      default(option) {
         if (this.optionKey && this.optionLabel) {
-          return option[this.optionKey] + " " + option[this.optionLabel];
+          return option[this.optionKey] + ' ' + option[this.optionLabel];
         }
         if (this.optionLabel) {
           return option[this.optionLabel];
@@ -161,25 +158,25 @@ export default {
           return option[this.optionKey];
         }
         return option;
-      }
+      },
     },
     getOptionValue: {
       type: Function,
-      default: function (option) {
+      default(option) {
         if (this.optionKey) {
           return option[this.optionKey];
         }
-        
+
         if (this.optionLabel) {
           return option[this.optionLabel];
         }
-        
+
         return option;
-      }
+      },
     },
     filterBy: {
       type: Function,
-      default: function (option) {
+      default(option) {
         if (this.optionLabel && this.optionKey) {
           return (
             option[this.optionLabel]
@@ -190,34 +187,34 @@ export default {
               .toString()
               .toLowerCase()
               .includes(this.searchText.toString().toLowerCase())
-          )
+          );
         }
-        
+
         if (this.optionLabel) {
           return option[this.optionLabel]
             .toString()
             .toLowerCase()
-            .includes(this.searchText.toString().toLowerCase())
+            .includes(this.searchText.toString().toLowerCase());
         }
-        
+
         if (this.optionKey) {
           option[this.optionKey]
             .toString()
             .toLowerCase()
-            .includes(this.searchText.toString().toLowerCase())
+            .includes(this.searchText.toString().toLowerCase());
         }
-        
+
         return option
           .toString()
           .toLowerCase()
-          .includes(this.searchText.toString().toLowerCase())
-      }
-    }
+          .includes(this.searchText.toString().toLowerCase());
+      },
+    },
   },
   mixins: [pointerScroll],
   mounted() {
-    document.addEventListener("click", this.handleClickOutside);
-    document.addEventListener("keyup", this.handleClickOutside);
+    document.addEventListener('click', this.handleClickOutside);
+    document.addEventListener('keyup', this.handleClickOutside);
     if (this.value && this.options.includes(this.value)) {
       this.selectedOption = this.value;
       return;
@@ -225,14 +222,14 @@ export default {
     this.searchText = this.initial;
   },
   destroyed() {
-    document.removeEventListener("keyup", this.handleClickOutside);
-    document.removeEventListener("click", this.handleClickOutside);
+    document.removeEventListener('keyup', this.handleClickOutside);
+    document.removeEventListener('click', this.handleClickOutside);
   },
   data() {
     return {
       searchText: null,
       selectedOption: null,
-      dropdownOpen: false
+      dropdownOpen: false,
     };
   },
   watch: {
@@ -245,38 +242,36 @@ export default {
       }
     },
     selectedOption(curr, prev) {
-      this.$emit("input", curr);
+      this.$emit('input', curr);
     },
     dropdownOpen(curr, prev) {
       if (curr === prev) {
         return;
       }
-      
+
       if (!curr) {
         this.searchText = null;
         return;
       }
-      
+
       if (!this.searchText) {
-        this.searchText = "";
-             }
-             
-             this.$nextTick().then(() => {
-                 this.$refs.search.focus();
-             });
-         }
-     },
+        this.searchText = '';
+      }
+      const self = this;
+      this.$nextTick().then(() => {
+         self.$refs.search.focus();
+      });
+    },
+},
      computed: {
          isRequired() {
              if (!this.required) {
-                 return "";
+                 return '';
              }
-             
              if (this.selectedOption) {
-                 return "";
+                 return '';
              }
-             
-             return "required";
+             return 'required';
          },
          matchingOptions() {
              if (this.searchText === null) {
@@ -285,13 +280,10 @@ export default {
              if (!this.searchText.length) {
                  return [...this.options].slice(0, this.maxResults);
              }
-             
              return this.options
-                        .filter(option =>
-                            this.filterBy(option)
-                        )
+                        .filter((option) => this.filterBy(option))
                         .slice(0, this.maxResults);
-         }
+         },
      },
      methods: {
          setPointerIdx(idx) {
@@ -302,7 +294,7 @@ export default {
                  return;
              }
 
-             this.searchText = "";
+             this.searchText = '';
          },
          switchToSearch(event) {
              this.$refs.selectedValue.value = null;
@@ -333,7 +325,7 @@ export default {
                  this.pointer--;
              }
          },
-         setOption() {
+         setOption(e) {
              if (!this.matchingOptions || !this.matchingOptions.length) {
                  return;
              }
@@ -345,19 +337,21 @@ export default {
              this.searchText = null;
              this.dropdownOpen = false;
              this.pointer = -1;
-             this.$nextTick().then(() => {
-                 this.$refs.match.focus();
-             });
+             if (!(e && e.code && e.code === 'Tab')) {
+                const self = this;
+                this.$nextTick().then(() => {
+                    self.$refs.match.focus();
+                });
+             }
          },
          handleClickOutside(e) {
-             if (this.$el.contains(e.target)) {
+             if (this.$el.contains(e.target) || e.target.id === this.inputId) {
                  return;
              }
-
              this.dropdownOpen = false;
              this.searchText = null;
-         }
-     }
+         },
+     },
  };
 </script>
 <style scoped>
