@@ -7,11 +7,11 @@
                        :id="inputId"
                        @click="seedSearchText"
                        @focus="seedSearchText"
-                       @keyup.enter="setOption"
-                       @keyup.down="movePointerDown"
-                       @keyup.tab.stop="closeOut"
+                       @keydown.enter.stop="setOption"
+                       @keydown.tab="setOption"
                        @keyup.esc.stop="closeOut"
                        @keyup.up="movePointerUp"
+                       @keyup.down="movePointerDown"
                        :placeholder="placeholder"
                        autocomplete="off"
                        :required="required"
@@ -37,10 +37,9 @@
                         class="cursor-pointer outline-none"
                         @blur="handleClickOutside($event)"
                         @mouseover="setPointerIdx(idx)"
-                        @keyup.enter="setOption()"
                         @keyup.up="movePointerUp()"
                         @keyup.down="movePointerDown()"
-                        @click.prevent="setOption()"
+                        @click.prevent="setOption"
                     >
                         <slot name="option" v-bind="{option,idx}">
                             {{ getOptionDescription(option) }}
@@ -333,7 +332,7 @@ export default {
                  this.pointer--;
              }
          },
-         setOption() {
+         setOption(e) {
              if (!this.matchingOptions || !this.matchingOptions.length) {
                  return;
              }
@@ -345,9 +344,11 @@ export default {
              this.searchText = null;
              this.dropdownOpen = false;
              this.pointer = -1;
-             this.$nextTick().then(() => {
-                 this.$refs.match.focus();
-             });
+             if(!(e && e.code && e.code === 'Tab')) {
+                this.$nextTick().then(() => {
+                    this.$refs.match.focus();
+                });
+             }
          },
          handleClickOutside(e) {
              if (this.$el.contains(e.target)) {
