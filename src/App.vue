@@ -1,62 +1,32 @@
 <template>
     <div id="app" class="mt-2">
-        <vue-single-select      
-            v-model="thread" 
+      <form class="p-2 form w-full bg-x"
+	    action="">
+	<input value="test input 1">
+	<label style="display: block">Vue Single Select</label>
+	<vue-single-select
+	  :getOptionDescription="getCustomDescription"
+            v-model="thread"
             :options="threads"
-            :required="true"
             option-label="a_title"
-            :getOptionDescription="getCustomDescription"
             option-key="id"
             name="dude"
         ></vue-single-select>    
-        <form class="p-2 form w-full bg-x" style="xbackground: yellow" @submit.prevent>
             <div class="mt-1">
             <label>foo</label>
             <input class="search-input inline-block" value="roob">
             </div>
-            <div v-if="false" class="m-1 p-1" style="width: 50%">
-                <label class="mr-1 inline">select</label>
-                <vue-taggable-select v-on:option-created="addOption"
-                    v-model="fruit" 
-                    :options="fruits"
-                    :taggable="true"
-                ></vue-taggable-select>
-                <hr>
-                {{fruits}}
-                {{fruit}}
-                <br><hr class="mb-4">
-                <vue-taggable-select v-false="true"
-                                  v-model="myThreads"
-                                  :options="threads"
-                                  optionLabel="a_title"
-                                  :max-results="10"
-                >
-
-                </vue-taggable-select>
-            </div>
-            <div v-show="false" class="w-50">
-                <hr>
-                {{nums}}
-                {{numbers}}
-                <br><hr class="mb-4">
-                <vue-taggable-select
-                                  v-model="nums"
-                                  :options="numbers"
-                                  :max-results="4"
-                >
-
-                </vue-taggable-select>
-            </div>
-        </form>
         <hr>
-        <!-- select class="form-control" name="rob">
+        <select class="form-control" name="rob">
              <option>red</option>
-             <option>red</option>
-             <option>red</option>
-             <option>red</option>
-             </select -->
-        <button type="button" class="button py-2 px-4 bg-grey-lighter border rounded mt-2" >button</button>
-        <hr>
+             <option>blue</option>
+             <option>green</option>
+             <option>yellow</option>
+             </select>
+        <button type="submit" class="button py-2 px-4 bg-grey-lighter border rounded mt-2" >button</button>
+	<hr>
+	<input type="submit" value="submit">
+      </form>
     </div>
 </template>
 <script>

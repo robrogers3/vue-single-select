@@ -2,12 +2,13 @@
     <div ref="vuesingleselect">
         <div v-if="!selectedOption" :class="classes.wrapper">
             <div class="relative inline-block w-full">
-                <input ref="search"
+	      <input ref="search"
+		       :disabled="disabled"
                        :class="[classes.input, isRequired]"
                        :id="inputId"
-                       @click="seedSearchText"
                        @focus="seedSearchText"
-                       @keyup.enter="setOption"
+		       @keydown.enter.prevent="setOption"
+                       @keyup.enter.prevent="setOption"
                        @keyup.down="movePointerDown"
                        @keyup.tab.stop="closeOut"
                        @keyup.esc.stop="closeOut"
@@ -35,12 +36,11 @@
                         v-for="(option, idx) in matchingOptions" :key="idx"
                         :class="idx === pointer ? classes.activeClass : ''"
                         class="cursor-pointer outline-none"
-                        @blur="handleClickOutside($event)"
                         @mouseover="setPointerIdx(idx)"
-                        @keyup.enter="setOption()"
-                        @keyup.up="movePointerUp()"
-                        @keyup.down="movePointerDown()"
-                        @click.prevent="setOption()"
+                        @keyup.enter="setOption"
+                        @keyup.up="movePointerUp"
+                        @keyup.down="movePointerDown"
+                        @click.prevent="setOption"
                     >
                         <slot name="option" v-bind="{option,idx}">
                             {{ getOptionDescription(option) }}
@@ -130,6 +130,11 @@ export default {
       type: String,
       required: false,
       default: () => null
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: () => false
     },
     required: {
       type: Boolean,
@@ -310,7 +315,10 @@ export default {
              this.selectedOption = null;
              this.dropdownOpen = true;
          },
-         toggleDropdown() {
+	 toggleDropdown() {
+	     if (this.disabled) {
+		 return;
+	     }
              this.dropdownOpen = !this.dropdownOpen;
          },
          closeOut() {
@@ -334,6 +342,7 @@ export default {
              }
          },
          setOption() {
+	     console.log(this.matchingOptions)
              if (!this.matchingOptions || !this.matchingOptions.length) {
                  return;
              }
@@ -350,7 +359,7 @@ export default {
              });
          },
          handleClickOutside(e) {
-             if (this.$el.contains(e.target)) {
+             if (this.$el.contains(e.target) || e.target.id === this.inputId) {
                  return;
              }
 

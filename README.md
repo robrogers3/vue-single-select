@@ -3,7 +3,7 @@
     simple autocomplete select dropdown component for Vue apps for you!
 
 ## Demo
-[Check it out on Code Pen](https://codepen.io/robrogers3/full/WKjGZE)
+[Check it out on CodeSandbox](https://codesandbox.io/s/vue-template-sgjfj?fontsize=14)
 
 ## What It Does
 vue-single-select provides a **simple** component for making long, unwieldy select boxes more friendly, like Chosen for jQuery.
@@ -360,6 +360,12 @@ There are more props than I'd like. But I needed them so you might too.
       type: String,
       required: false,
       default: () => null
+    },
+    // Disable it!
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: () => false
     },
     // Make it required
     required: {
