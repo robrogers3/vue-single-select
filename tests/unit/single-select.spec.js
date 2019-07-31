@@ -226,7 +226,8 @@ describe('VueSingleSelect', () => {
 	click('li:first-child')
 	has('cherry', '.search-input');
 	expect(wrapper.find('input[name=fruit]').element.value).toBe('cherry')
-	click({ ref: 'match' })
+	type('', '.search-input');
+	//click({ ref: 'match' })
 	expect(wrapper.find({ ref: 'selectedValue' }).exists()).toBe(false)
     })
 });

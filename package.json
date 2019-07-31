@@ -1,6 +1,6 @@
 {
   "name": "vue-single-select",
-  "version": "1.0.29",
+  "version": "1.1.0",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
@@ -23,7 +23,10 @@
     "copy-webpack-plugin": "^4.5.2",
     "cross-env": "^5.0.5",
     "css-loader": "^1.0.0",
+    "eslint": "^6.1.0",
+    "eslint-plugin-vue": "^5.2.3",
     "file-loader": "^2.0.0",
+    "fsevents": "1.2.9",
     "global": "^4.3.2",
     "vue": "^2.5.11",
     "vue-loader": "15.4.2",
@@ -59,5 +62,6 @@
     "select",
     "element"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {}
 }
